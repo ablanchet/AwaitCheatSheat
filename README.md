@@ -336,3 +336,64 @@ public class Exceptional
     }
 }
 ```
+## What's the point of `Task.Yield()` ? And why should I sometimes await it ?
+`Task.Yield` works a little bit like posting a work item for later on the current `Dispatcher` or `SynchronizationContext` or whatever. Awaiting it makes sure the async method will not be blocking its caller. It's like await a fake task and postponing all work that is declared after the await to a continuation.
+
+Here's an example:
+```csharp
+public class Yield
+{
+    public static async Task Main()
+    {
+        LogToConsole("Calling Yielding()");
+        var t = Yielding(false); // pass `true` to call `Task.Yield` at the beginning of `Yielding` method
+        LogToConsole("Yielding() called, control back to Main");
+
+        LogToConsole("Awaiting task returned by Yielding");
+        await t;
+        LogToConsole("Yielding done");
+    }
+
+    private static async Task Yielding(bool isYielding)
+    {
+        if (isYielding)
+            await Task.Yield();
+
+        LogToConsole("Start some heavy blocking work", 1);
+        Thread.Sleep(2000);
+        LogToConsole("Heavy blocking work done", 1);
+
+        LogToConsole("Awaiting some async heavy work", 1);
+        await Task.Delay(1000);
+        LogToConsole("Async heavy work done, control back to Yielding", 1);
+    }
+
+
+    private static void LogToConsole(string message, int indent = 0, [CallerMemberName] string caller = "")
+    {
+        Console.WriteLine($"{DateTime.UtcNow} - #{Thread.CurrentThread.ManagedThreadId} - {new string('\t', indent) } [{caller}] {message}");
+    }
+}
+```
+When `isYielding` is false the first part of `Yielding` is called synchronously by `Main`, making it block for 2 seconds because of the `Thread.Sleep`. The console output is:
+```
+11/23/2017 9:59:53 PM - #1 -  [Main] Calling Yielding()
+11/23/2017 9:59:53 PM - #1 -     [Yielding] Start some heavy blocking work
+11/23/2017 9:59:55 PM - #1 -     [Yielding] Heavy blocking work done
+11/23/2017 9:59:55 PM - #1 -     [Yielding] Awaiting some async heavy work
+11/23/2017 9:59:55 PM - #1 -  [Main] Yielding() called, control back to Main
+11/23/2017 9:59:55 PM - #1 -  [Main] Awaiting task returned by Yielding
+11/23/2017 9:59:56 PM - #4 -     [Yielding] Async heavy work done, control back to Yielding
+11/23/2017 9:59:56 PM - #4 -  [Main] Yielding done
+```
+When `isYielding` is true the method returns immediately to `Main`. Then the rest of the method is executed in another task, blocking it, etc. The output looks like this:
+```
+11/23/2017 10:00:22 PM - #1 -  [Main] Calling Yielding()
+11/23/2017 10:00:22 PM - #1 -  [Main] Yielding() called, control back to Main
+11/23/2017 10:00:22 PM - #1 -  [Main] Awaiting task returned by Yielding
+11/23/2017 10:00:22 PM - #3 -    [Yielding] Start some heavy blocking work
+11/23/2017 10:00:24 PM - #3 -    [Yielding] Heavy blocking work done
+11/23/2017 10:00:24 PM - #3 -    [Yielding] Awaiting some async heavy work
+11/23/2017 10:00:25 PM - #4 -    [Yielding] Async heavy work done, control back to Yielding
+11/23/2017 10:00:25 PM - #4 -  [Main] Yielding done
+```
