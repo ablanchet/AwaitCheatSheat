@@ -1,6 +1,6 @@
 # AwaitCheatSheat
 ## How exception handling works with async/await, task.WhenAll etc
-0. Not even an async example: Exception catched properly.
+0. Not even an async example: Exception caught properly.
 ```csharp
 public class Exceptional
 {
@@ -12,7 +12,7 @@ public class Exceptional
         }
         catch (Exception)
         {
-            Console.WriteLine("catched exception");
+            Console.WriteLine("exception caught");
         }
 
         Console.ReadLine();
@@ -37,7 +37,7 @@ public class Exceptional
         }
         catch (Exception)
         {
-            Console.WriteLine("catched exception");
+            Console.WriteLine("exception caught");
         }
 
         Console.ReadLine();
@@ -62,7 +62,7 @@ public class Exceptional
         }
         catch (Exception)
         {
-            Console.WriteLine("catched exception");
+            Console.WriteLine("exception caught");
         }
 
         Console.ReadLine();
@@ -87,7 +87,7 @@ public class Exceptional
         }
         catch (Exception)
         {
-            Console.WriteLine("catched exception");
+            Console.WriteLine("exception caught");
         }
 
         Console.ReadLine();
@@ -100,7 +100,7 @@ public class Exceptional
 }
 ```
 ---
-4. Exception catched, awaiting `X` will unwrap the `AggregateException` and throw the first (and single) one.
+4. Exception caught, awaiting `X` will unwrap the `AggregateException` and throw the first (and single) one.
 ```csharp
 public class Exceptional
 {
@@ -112,7 +112,7 @@ public class Exceptional
         }
         catch (Exception)
         {
-            Console.WriteLine("catched exception");
+            Console.WriteLine("exception caught");
         }
 
         Console.ReadLine();
@@ -125,7 +125,7 @@ public class Exceptional
 }
 ```
 ---
-5. Exception catched, awaiting `X` will `await` the first task that throws an exception, unwrap the exception, rethrow it, and `Main` will unwrap it to throw it again and finally catch it.
+5. Exception caught, awaiting `X` will `await` the first task that throws an exception, unwrap the exception, rethrow it, and `Main` will unwrap it to throw it again and finally catch it.
 ```csharp
 public class Exceptional
 {
@@ -137,11 +137,11 @@ public class Exceptional
         }
         catch (SystemException)
         {
-            Console.WriteLine("catched SystemException");
+            Console.WriteLine("SystemException caught");
         }
         catch (ApplicationException)
         {
-            Console.WriteLine("catched ApplicationException");
+            Console.WriteLine("ApplicationException caught");
         }
 
         Console.ReadLine();
@@ -179,11 +179,11 @@ public class Exceptional
         }
         catch (SystemException)
         {
-            Console.WriteLine("catched SystemException");
+            Console.WriteLine("SystemException caught");
         }
         catch (ApplicationException)
         {
-            Console.WriteLine("catched ApplicationException");
+            Console.WriteLine("ApplicationException caught");
         }
 
         Console.ReadLine();
@@ -220,11 +220,11 @@ public class Exceptional
         }
         catch (SystemException)
         {
-            Console.WriteLine("catched SystemException");
+            Console.WriteLine("SystemException caught");
         }
         catch (ApplicationException)
         {
-            Console.WriteLine("catched ApplicationException");
+            Console.WriteLine("ApplicationException caught");
         }
 
         Console.ReadLine();
@@ -266,15 +266,15 @@ public class Exceptional
         }
         catch (SystemException)
         {
-            Console.WriteLine("catched SystemException");
+            Console.WriteLine("SystemException caught");
         }
         catch (ApplicationException)
         {
-            Console.WriteLine("catched ApplicationException");
+            Console.WriteLine("ApplicationException caught");
         }
         catch (AggregateException e)
         {
-            Console.WriteLine($"catched AggregateException, {e}");
+            Console.WriteLine($"AggregateException caught, {e}");
         }
 
         Console.ReadLine();
