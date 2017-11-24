@@ -401,3 +401,35 @@ When `isYielding` is true the method returns immediately to `Main`. Then the res
 11/23/2017 10:00:25 PM - #4 -    [Yielding] Async heavy work done, control back to Yielding
 11/23/2017 10:00:25 PM - #4 -  [Main] Yielding done
 ```
+## What does `ConfigureAwait` does exactly ?
+`ConfigureAwait` is here to let the framework know if you want the current configured `SynchronizationContext` to be re-used for the continuation scheduled for the work after the await. 
+In a Windows Form or Wpf application it translate into "should the work after the await be called on the UI thread or not". In a console application it doesn't do anything because no `SynchronizationContext` is defined by default. 
+
+Here's an example: this is a view model attached to the datacontext of a wpf window, when you click a button the command is executed
+```csharp
+public class MainWindowViewModel
+{
+    public ICommand ButtonCommand { get; }
+
+    public MainWindowViewModel()
+    {
+        ButtonCommand = new Command(async () =>
+        {
+            Debug.WriteLine($"Current thread is #{Thread.CurrentThread.ManagedThreadId}");
+            await Task.Delay(1000).ConfigureAwait(false); // <-- continueOnCapturedContext: FALSE
+            Debug.WriteLine($"Current thread is #{Thread.CurrentThread.ManagedThreadId}");
+        });
+    }
+}
+```
+The output of this will be:
+```
+Current thread is #1
+Current thread is #7 (7 could have been 3712)
+```
+Otherwise the output will be:
+```
+Current thread is #1
+Current thread is #1
+```
+since capturing the current synchronization context (when it's not null) is the default behavior.
