@@ -2,6 +2,7 @@
 
 - [How exception handling works with async/await, task.WhenAll etc](https://github.com/ablanchet/AwaitCheatSheat#how-exception-handling-works-with-asyncawait-taskwhenall-etc)
 - [What's the point of `Task.Yield()` ? And why should I sometimes await it ?](https://github.com/ablanchet/AwaitCheatSheat#whats-the-point-of-taskyield--and-why-should-i-sometimes-await-it-)
+- [What does `ConfigureAwait` does exactly ?](https://github.com/ablanchet/AwaitCheatSheat/blob/master/README.md#what-does-configureawait-does-exactly-)
 
 ## How exception handling works with async/await, task.WhenAll etc
 0. Not even an async example: Exception caught properly.
