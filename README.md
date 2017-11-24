@@ -2,7 +2,7 @@
 
 - [How exception handling works with async/await, task.WhenAll etc](https://github.com/ablanchet/AwaitCheatSheat#how-exception-handling-works-with-asyncawait-taskwhenall-etc)
 - [What's the point of `Task.Yield()` ? And why should I sometimes await it ?](https://github.com/ablanchet/AwaitCheatSheat#whats-the-point-of-taskyield--and-why-should-i-sometimes-await-it-)
-- [What does `ConfigureAwait` does exactly ?](https://github.com/ablanchet/AwaitCheatSheat/blob/master/README.md#what-does-configureawait-does-exactly-)
+- [What does `ConfigureAwait` do exactly ?](https://github.com/ablanchet/AwaitCheatSheat/blob/master/README.md#what-does-configureawait-do-exactly-)
 
 ## How exception handling works with async/await, task.WhenAll etc
 0. Not even an async example: Exception caught properly.
@@ -402,7 +402,7 @@ When `isYielding` is true the method returns immediately to `Main`. Then the res
 11/23/2017 10:00:25 PM - #4 -    [Yielding] Async heavy work done, control back to Yielding
 11/23/2017 10:00:25 PM - #4 -  [Main] Yielding done
 ```
-## What does `ConfigureAwait` does exactly ?
+## What does `ConfigureAwait` do exactly ?
 `ConfigureAwait` is here to let the framework know if you want the current configured `SynchronizationContext` to be re-used for the continuation scheduled for the work after the await. 
 In a Windows Form or Wpf application it translate into "should the work after the await be called on the UI thread or not". In a console application it doesn't do anything because no `SynchronizationContext` is defined by default. 
 
