@@ -55,7 +55,7 @@ public class Exceptional
 }
 ```
 ---
-2. Unhandled exception because `X` is executed somewhere else because `X` is marked as `async`, marking `Main` as `async` doesn't change anything ... we're not awaiting anything.
+2. Unhandled exception because `X` is executed somewhere else and `X` is marked as `async`, marking `Main` as `async` doesn't change anything ... we're not awaiting anything.
 ```csharp
 public class Exceptional
 {
@@ -342,7 +342,7 @@ public class Exceptional
 }
 ```
 ## What's the point of `Task.Yield()` ? And why should I sometimes await it ?
-`Task.Yield` works a little bit like posting a work item for later on the current `Dispatcher` or `SynchronizationContext` or whatever. Awaiting it makes sure the async method will not be blocking its caller. It's like await a fake task and postponing all work that is declared after the await to a continuation.
+`Task.Yield` works a little bit like posting a work item for later on the current `Dispatcher` or `SynchronizationContext` or whatever. Awaiting it makes sure the async method won't be blocking its caller. It's like await a fake task and postponing all work that is declared after the await to a continuation.
 
 Here's an example:
 ```csharp
