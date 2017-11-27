@@ -30,7 +30,7 @@ public class Exceptional
 }
 ```
 ---
-1. Unhandled exception because `X` is executed somewhere else because `X` is marked as `async`.
+1. Unhandled exception: `X` is executed somewhere else because `X` is marked as `async`.
 ```csharp
 public class Exceptional
 {
@@ -55,7 +55,7 @@ public class Exceptional
 }
 ```
 ---
-2. Unhandled exception because `X` is executed somewhere else and `X` is marked as `async`, marking `Main` as `async` doesn't change anything ... we're not awaiting anything.
+2. Unhandled exception: `X` is executed somewhere else because `X` is marked as `async`, marking `Main` as `async` doesn't change anything ... we're not awaiting anything.
 ```csharp
 public class Exceptional
 {
@@ -80,7 +80,7 @@ public class Exceptional
 }
 ```
 ---
-3. Wont compile: we try to `await` a `void`.
+3. Won't compile: we try to `await` a `void`.
 ```csharp
 public class Exceptional
 {
@@ -382,25 +382,25 @@ public class Yield
 ```
 When `isYielding` is false the first part of `Yielding` is called synchronously by `Main`, making it block for 2 seconds because of the `Thread.Sleep`. The console output is:
 ```
-11/23/2017 9:59:53 PM - #1 -  [Main] Calling Yielding()
-11/23/2017 9:59:53 PM - #1 -     [Yielding] Start some heavy blocking work
-11/23/2017 9:59:55 PM - #1 -     [Yielding] Heavy blocking work done
-11/23/2017 9:59:55 PM - #1 -     [Yielding] Awaiting some async heavy work
-11/23/2017 9:59:55 PM - #1 -  [Main] Yielding() called, control back to Main
-11/23/2017 9:59:55 PM - #1 -  [Main] Awaiting task returned by Yielding
-11/23/2017 9:59:56 PM - #4 -     [Yielding] Async heavy work done, control back to Yielding
-11/23/2017 9:59:56 PM - #4 -  [Main] Yielding done
+0:00:03 - #1 -  [Main] Calling Yielding()
+0:00:03 - #1 -     [Yielding] Start some heavy blocking work
+0:00:05 - #1 -     [Yielding] Heavy blocking work done
+0:00:05 - #1 -     [Yielding] Awaiting some async heavy work
+0:00:05 - #1 -  [Main] Yielding() called, control back to Main
+0:00:05 - #1 -  [Main] Awaiting task returned by Yielding
+0:00:06 - #4 -     [Yielding] Async heavy work done, control back to Yielding
+0:00:06 - #4 -  [Main] Yielding done
 ```
 When `isYielding` is true the method returns immediately to `Main`. Then the rest of the method is executed in another task, blocking it, etc. The output looks like this:
 ```
-11/23/2017 10:00:22 PM - #1 -  [Main] Calling Yielding()
-11/23/2017 10:00:22 PM - #1 -  [Main] Yielding() called, control back to Main
-11/23/2017 10:00:22 PM - #1 -  [Main] Awaiting task returned by Yielding
-11/23/2017 10:00:22 PM - #3 -    [Yielding] Start some heavy blocking work
-11/23/2017 10:00:24 PM - #3 -    [Yielding] Heavy blocking work done
-11/23/2017 10:00:24 PM - #3 -    [Yielding] Awaiting some async heavy work
-11/23/2017 10:00:25 PM - #4 -    [Yielding] Async heavy work done, control back to Yielding
-11/23/2017 10:00:25 PM - #4 -  [Main] Yielding done
+0:00:02 - #1 -  [Main] Calling Yielding()
+0:00:02 - #1 -  [Main] Yielding() called, control back to Main
+0:00:02 - #1 -  [Main] Awaiting task returned by Yielding
+0:00:02 - #3 -    [Yielding] Start some heavy blocking work
+0:00:04 - #3 -    [Yielding] Heavy blocking work done
+0:00:04 - #3 -    [Yielding] Awaiting some async heavy work
+0:00:05 - #4 -    [Yielding] Async heavy work done, control back to Yielding
+0:00:05 - #4 -  [Main] Yielding done
 ```
 ## What does `ConfigureAwait` do exactly ?
 `ConfigureAwait` is here to let the framework know if you want the current configured `SynchronizationContext` to be re-used for the continuation scheduled for the work after the await. 
@@ -426,7 +426,7 @@ public class MainWindowViewModel
 The output of this will be:
 ```
 Current thread is #1
-Current thread is #7 (7 could have been 3712)
+Current thread is #7 // (7 could have been 3712)
 ```
 Otherwise the output will be:
 ```
